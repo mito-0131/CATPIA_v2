@@ -1,0 +1,11 @@
+- breadcrumb :favorites
+.container
+  br
+    h5
+      |　　お気に入りの猫カフェ　
+      = @favorites.count
+      | 件
+  - if @favorites.present?
+    .favorites
+      = render @favorites
+  p

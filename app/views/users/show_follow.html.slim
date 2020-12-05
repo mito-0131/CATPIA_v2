@@ -1,0 +1,30 @@
+- provide(:title, @title)
+.container.text-center
+  br
+  h4.profile-stats
+    | P R O F I L E
+  .user
+    .col-md-7.mx-auto
+      p
+      .user-picture-box
+          = gravatar_for @user, size: 75, cl: "gravatar-user-picture"
+      p
+      h5.show-user-name.text-center
+        = @user.name
+      span
+        | 投稿した猫カフェ　
+        = @user.shops.count
+        | 件
+      section.stats
+        = render 'shared/stats'
+      p
+    p
+    .col-md-8.mx-auto
+    p
+      h6
+        = @title
+      - if @users.any?
+        users.follow-user-show
+          = render @users
+        p
+        = paginate @users

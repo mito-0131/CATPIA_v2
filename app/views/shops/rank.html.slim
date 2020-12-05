@@ -1,0 +1,33 @@
+/- @all_ranks = Shop.find(Favorite.group(:shop_id).order('count(shop_id) desc').limit(3).pluck(:shop_id))
+ - @all_ranks = Shop.all.sort {|a,b| b.favorited_users.count <=> a.favorited_users.count}
+
+.container
+  .text-center
+    h4.feed-home
+      = render 'shops/icon'
+
+.container
+  .text-center
+    h4.rank-cat
+      | 人気の猫カフェ
+    br
+    p
+  .row.text-center
+    br
+    p
+    - @all_ranks.each.with_index(1) do |shop, i|
+      h5.col-md-4.mx-auto
+        .card.shadow[style="width: 370px"]
+          p
+          |　第
+          = i
+          |位
+          |　
+          = link_to shop.name, shop_path(shop)
+          br
+          p
+            = link_to((image_tag shop.picture.thumb400.url), shop_path(shop.id), class: 'shop-picture') if shop.picture.url.present?
+          p
+          .user-name.rank
+                |　　　　　　　 　Posted by ：
+                = link_to shop.user.name, user_path(shop.user)

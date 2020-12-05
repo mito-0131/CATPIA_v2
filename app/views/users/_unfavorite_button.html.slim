@@ -1,0 +1,9 @@
+// お気に入り登録解除ボタン //
+= link_to "/favorites/#{@shop.id}/destroy",
+          method: :delete,
+          class: 'unlike',
+          remote: true do
+  .text-left.fav
+    .fa.fa-heart.fa-lg.text-left
+      .count_fav
+        = @favorites_count

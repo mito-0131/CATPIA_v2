@@ -1,0 +1,9 @@
+// お気に入り登録ボタン //
+= link_to "/favorites/#{@shop.id}/create",
+          method: :post,
+          class: 'like',
+          remote: true do
+  .text-left.fav
+    fa.far.fa-heart.fa-lg
+      .count_fav
+        = @favorites_count

@@ -1,0 +1,31 @@
+.container
+  .text-center
+    h4.feed-home
+      = render 'shops/icon'
+
+.container
+  .text-center
+    h4.rank-cat
+      | 今日の猫カフェ
+    br
+      | あなたにオススメの今日の猫カフェです
+    br
+  .row.text-center
+    br
+    p
+    - @random.each.with_index(1) do |shop, i|
+      h5.col-md-4.mx-auto
+        .card.shadow[style="width: 370px"]
+          p
+          |　第
+          = i
+          |位
+          |　
+          = link_to shop.name, shop_path(shop)
+          br
+          p
+            = link_to((image_tag shop.picture.thumb400.url), shop_path(shop.id), class: 'shop-picture') if shop.picture.url.present?
+          p
+          .user-name.rank
+                |　　　　　　　 　Posted by ：
+                = link_to shop.user.name, user_path(shop.user)

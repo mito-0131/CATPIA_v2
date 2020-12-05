@@ -1,0 +1,12 @@
+- provide(:title, 'MEMBERS')
+.container
+  p
+  .d-flex.justify-content-center
+    h5.members
+      | M E M B E R S
+  br
+  .users.text-center
+    = render @users
+  .pagination
+  = paginate @users
+

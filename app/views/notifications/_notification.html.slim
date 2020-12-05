@@ -1,0 +1,41 @@
+- user = User.find(notification.from_user_id)
+- shop = Shop.find(notification.shop_id)
+- id = "notification = notification.id"
+
+- if notification.variety == 1 # お気に入り登録の通知
+  p
+    = notification.created_at.strftime("%Y/%m/%d(%a) %H:%M")
+  .notification-message
+  p
+    | あなたの猫カフェ投稿が「
+    = link_to user.name, user_path(user)
+    | 」さんにお気に入り登録されました。
+
+- elsif notification.variety == 2 # コメントの通知
+  p
+    = notification.created_at.strftime("%Y/%m/%d(%a) %H:%M")
+  p.notification-message
+    | あなたの猫カフェ投稿に「
+    = link_to user.name, user_path(user)
+    | 」さんがコメントしました。
+    br
+    |「
+    = notification.content
+    | 」
+.row
+  .col-md-2
+    = link_to((image_tag shop.picture.thumb300.url), shop_path(shop), class: 'shop-picture')
+  p
+  p
+  .col-md-7
+    p
+    br
+    h5
+      = link_to shop.name, shop_path(shop)
+    p
+    p
+      = shop.description
+    li
+  p
+  br
+p

@@ -1,0 +1,91 @@
+.pagenav
+  header[tabindex="0"]
+    .logo-top
+      = link_to image_tag("CATPIA.png", class:"logo_top"), root_path
+
+- if logged_in?
+  - if current_user.notification == true
+    .new_notification.header-link
+      i.fas.fa-exclamation-circle
+  - else
+    .no_notification.header-link
+  = link_to notifications_path do
+    .fas.fa-bell
+      .span
+  = link_to user_path(@current_user) do
+    .fas.fa-user
+  = link_to new_shop_path do
+    .fas.fa-plus-square
+
+  input#menu-cb[type="checkbox" value="off"]
+  label#menu-icon[for="menu-cb"]
+    | ≡
+  label#menu-background[for="menu-cb"]
+  #ham-menu
+    ul
+    - if logged_in?
+      .nav-item
+        = search_form_for @q do |f|
+          = f.search_field :name_or_address_cont, placeholder: "\uf002 目黒区, カフェの名前 ...",class: 'form-control fa'
+      .nav-item
+        = link_to "通知", notifications_path, class: "nav-link"
+      .nav-item
+        = link_to "ホーム", root_path, class: "nav-link"
+      .nav-item
+        = link_to "CATPIAについて", about_path, class: "nav-link"
+      .nav-item
+        = link_to "お気に入り", favorites_path, class: "nav-link"
+      .nav-item
+        = link_to "会員", users_path, class: "nav-link"
+      .nav-item
+        = link_to "マイページ", user_path(@current_user), class: "nav-link"
+      .nav-item
+        = link_to "ユーザー編集", edit_user_path(@current_user), class: "nav-link"
+      p
+      .nav-item
+        = link_to "ログアウト", logout_path, method: :delete, class: "nav-link"
+
+    - else
+      .nav-item
+        = link_to "ホーム", root_path, class: "nav-link"
+      .nav-item
+        = link_to "ログイン", login_path, class: "nav-link"
+      .nav-item
+        = link_to "新規登録", signup_path, class: "nav-link"
+
+  /#nav-container
+    .bg
+    .button[tabindex="0"]
+      span.icon-bar
+      span.icon-bar
+      span.icon-bar
+    #nav-content[tabindex="0"]
+      - if logged_in?
+        - if current_user.notification == true
+          .new_notification.header-link
+        - else
+          .no_notification.header-link
+        = render 'layouts/search' if logged_in?
+        .nav-item
+          = link_to "NOTIFICATIONS", notifications_path, class: "nav-link"
+        .nav-item
+          = link_to "HOME", root_path, class: "nav-link"
+        .nav-item
+          = link_to "ABOUT", about_path, class: "nav-link"
+        .nav-item
+          = link_to "FAVORITES", favorites_path, class: "nav-link"
+        .nav-item
+          = link_to "MEMBERS", users_path, class: "nav-link"
+        .nav-item
+          = link_to "LOG OUT", logout_path, method: :delete, class: "nav-link"
+        .nav-item
+          = link_to "MY PAGE", user_path(@current_user), class: "nav-link"
+        .nav-item
+          = link_to "EDIT", edit_user_path(@current_user), class: "nav-link"
+      - else
+        .nav-item
+          = link_to "ホーム", root_path, class: "nav-link"
+        .nav-item
+          = link_to "ログイン", login_path, class: "nav-link"
+        .nav-item
+          = link_to "新規登録", signup_path, class: "nav-link"

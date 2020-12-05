@@ -1,0 +1,103 @@
+- provide(:title, "#{@shop.name}")
+- @comments = @shop.feed_comment(@shop.id)
+- shop = Shop.find(params[:id])
+- @favorites_count = Favorite.where(shop_id: @shop.id).count
+
+.container
+  .text-center
+    h4.feed-home
+      = render 'shops/icon'
+
+.container.shop.html.slim
+  .col-md-8.mx-auto
+    h4.name-shop-show
+      = link_to shop.name, shop_path(shop)
+    h8.user-name
+      |　Posted by :
+      = link_to shop.user.name, user_path(shop.user)
+    p
+
+    .card.card-body.col-lg-20.text-left
+      .shop-image.text-center
+        = link_to((image_tag shop.picture.thumb400.url), shop_path(shop.id), class: 'shop-picture') if shop.picture.url.present?
+      .shop-favorite-form
+        = render 'users/favorite_form'
+      .show.comment-new.fa.fa-lg
+        = link_to "\uf27a", { anchor: "form" }
+      p
+      .shop-address-show
+        |  所在地：
+        = shop.address
+      p
+      .shop-web_page
+        | WEB：
+        = link_to "#{@shop.web_page}", @shop.web_page, target: "_blank"
+      br
+      .shop-description
+        | 店舗説明：
+        = shop.description
+      p
+      br
+      .shop-title-recommended_points
+        | おすすめポイント：
+        = shop.recommended_points
+      p
+      br
+      ul.shop-rating
+        | おすすめ度：
+        - if @shop.rating.present?
+          = "⭐️" * shop.rating
+          = "☆" * (5 - shop.rating)
+      p
+        = render 'shops/tag_list', tag_list: shop.tag_list
+
+      br
+        //管理者ユーザーまたは投稿作成ユーザー以外には削除を表示させない
+      .change-shop-show
+        - if current_user.admin? || (current_user == shop.user)
+          = link_to "編集", edit_shop_path(shop)
+          |　|　
+          = link_to "削除", shop_path(shop.id), method: :delete, class: 'del_dis',
+                          data: { confirm: "本当に削除しますか？" }
+      .timestamp.text-right
+        = time_ago_in_words(shop.created_at)
+        | 前に投稿
+      p
+    p
+    .comment.form-comments
+      = render "comments/feed_comments"
+    #form
+      = render "comments/new"
+  p
+  .google_map
+    | 店舗地図
+
+div id='map' style='height: 500px; width: 100%;'
+
+= javascript_include_tag src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAh_mxXXCr5aAy-KrOHfg_q3SZsxNiwHPg&callback=initMap", async: true, defer: true
+
+javascript:
+  function initMap() {
+    var test ={ lat: #{@shop.latitude}, lng: #{@shop.longitude} };
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 15,
+      center: test
+    });
+    var transitLayer = new google.maps.TransitLayer();
+    transitLayer.setMap(map);
+
+    var contentString = "所在地：#{@shop.address} ";
+    var infowindow = new google.maps.InfoWindow({
+      content: contentString
+    });
+
+    var marker = new google.maps.Marker({
+      position:test,
+      map: map,
+      title: contentString
+    });
+
+    marker.addListener('click', function() {
+      infowindow.open(map, marker);
+    });
+  }
