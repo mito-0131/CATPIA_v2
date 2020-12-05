@@ -1,0 +1,64 @@
+- if logged_in?
+  .container
+    .text-center
+      h4.feed-home
+        = render 'shared/slide'
+      h4.catall
+        | みんなの猫カフェ：
+        = @feed_items.total_count
+        |  件
+      .header-bottom
+        .header-bottom__list
+          - @tags = ["白猫","黒猫", "お洒落", "譲渡可能", "保護猫"]
+          - @tags.each do |tag|
+            li.header-bottom__list__item
+              = link_to tag, shops_path(tag_name: tag), class: "header-bottom__list--name"
+
+    .feeding
+      = render 'shared/feed'
+      br
+- else
+  .container
+    main[role="main"]
+      #myCarousel.carousel.slide[data-ride="carousel"]
+        ol.carousel-indicators
+          li.active[data-target="#myCarousel" data-slide-to="0"]
+          li[data-target="#myCarousel" data-slide-to="1"]
+
+        .carousel-inner
+          .carousel-item.active
+            = image_tag "newcat2.jpeg"
+            .carousel-caption
+              .easy-login
+                a.btn.btn-lg.btn-outline-light[href="/recruit_login" role="button"]
+                  | かんたんログイン
+              h1.catpia
+                | C A T P I A
+              br
+              |あなたの街の心やすらぐ猫カフェ。
+              p
+              | 素敵な猫カフェをシェアしてみませんか？
+              p
+              a.btn.btn-lg.btn-outline-light[href="/signup" role="button"]
+                | はじめる
+          .carousel-item
+            = image_tag "top3.jpg"
+            .container
+              .carousel-caption.text-center
+                h1
+                  | C A T P I A
+                h1
+                  | 誕 生
+                p
+                  | 2020年10月、CATPIAは誕生しました。詳しくは下のボタンから。
+                p
+                  a.btn.btn-lg.btn-outline-light[href="/about" role="button"]
+                    | CATPIAについて
+          a.carousel-control-prev[href="#myCarousel" role="button" data-slide="prev"]
+            span.carousel-control-prev-icon[aria-hidden="true"]
+            span.sr-only
+              | Previous
+          a.carousel-control-next[href="#myCarousel" role="button" data-slide="next"]
+            span.carousel-control-next-icon[aria-hidden="true"]
+            span.sr-only
+              | Next

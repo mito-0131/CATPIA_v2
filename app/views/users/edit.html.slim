@@ -1,0 +1,30 @@
+- provide(:title, "プロフィール編集")
+p
+.container.d-flex.justify-content-center
+  .col-md-6.text-center
+    = form_for(@user) do |f|
+      = render 'shared/error_messages', object: f.object
+      .gravatar_edit
+        = gravatar_for(@user, size: 70)
+        p
+        h5
+          = @user.name
+      p
+        a[href="http://gravatar.com/emails" target="_blank"]
+          | プロフィール写真を変更
+      p
+      .form-group
+        = f.label :name
+        = f.text_field :name, class: 'form-control', id: 'user_name'
+      .form-group
+        = f.label :introduction
+        = f.text_area :introduction, class: 'form-control', id: 'user_introduction'
+      .form-group
+        = f.label :email
+        = f.text_field :email, class: 'form-control', id: 'user_email', readonly: true
+
+      = f.submit "更新する", class: "btn btn-info"
+      ul
+      //= link_to "アカウントを削除する", user_path(@user), method: :delete,
+                                              data: { confirm: "本当に削除しますか？" }
+      ul

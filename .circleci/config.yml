@@ -1,0 +1,82 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.5.3-node-browsers
+        environment:
+          RAILS_ENV: test
+          MYSQL_HOST: 127.0.0.1
+
+      - image: mysql:5.7
+        environment:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: root
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "Gemfile.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
+
+      - run: bundle exec rake db:create
+      - run: bundle exec rake db:schema:load
+
+      # - run:
+          # name: Rspec
+          # command: bundle exec rspec
+
+      #- run: sudo apt update && sudo apt install -y python-dev python-pip
+      #- run: sudo pip install awscli --ignore-installed six
+
+      #- run:
+        #  name: "authorize-security-group-ingress"
+        #  command: |
+        #    IP=`curl -s ifconfig.me`
+        #    echo "#!/bin/bash" > ./sg.sh
+        #    echo "aws configure set region ap-northeast-1" >> ./sg.sh
+        #    echo "aws ec2 authorize-security-group-ingress --group-id sg-093c91a7b7f4bc7e7 --protocol tcp --port 22 --cidr ${IP}/32" >> ./sg.sh
+        #    bash ./sg.sh
+
+      # - run:
+          # name: Rubocop
+          # command: bundle exec rubocop
+
+      - add_ssh_keys:
+          fingerprints:
+            - "5c:68:94:97:02:7a:c5:57:0b:60:3f:05:bf:04:2b:08"
+
+      # マスターブランチのみcap走らせる
+      - deploy:
+           name: Capistrano deploy
+           command: |
+             if [ "${CIRCLE_BRANCH}" != "master" ]; then
+               exit 0
+             fi
+             bundle exec cap production deploy
+
+      #- run:
+         # name: "revoke-security-group-ingress"
+         # command: |
+          #  IP=`curl -s ifconfig.me`
+          #  echo "#!/bin/bash" > ./sg.sh
+          #  echo "aws configure set region ap-northeast-1" >> ./sg.sh
+          #  echo "aws ec2 revoke-security-group-ingress --group-id sg-093c91a7b7f4bc7e7 --protocol tcp --port 22 --cidr ${IP}/32" >> ./sg.sh
+          #  bash ./sg.sh

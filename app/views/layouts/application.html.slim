@@ -1,0 +1,51 @@
+doctype html
+html
+  head
+    title = full_title(yield(:title))
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    meta[name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"]
+    script[src="//code.jquery.com/jquery-1.11.3.min.js"]
+    script[src="//cdnjs.cloudflare.com/ajax/libs/jquery.pjax/1.9.6/jquery.pjax.js"]
+
+  body
+    script[src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"]
+    script[src="https://kit.fontawesome.com/84eeecacff.js" crossorigin="anonymous"]
+    script[src="https://cdn.jsdelivr.net/npm/vue"]
+
+    header
+
+      = render 'partial/navbar'
+
+      .container
+        script[type="text/javascript"]
+          - flash.each do |key, value|
+            - key = "success" if key == "notice"
+            - key = "danger" if key == "alert"
+            |  toastr['
+            = key
+            | ']('
+            = value
+            | ');
+      #app
+        <div class="Page-Btn" @click="scrollTop">
+        i.fas.fa-chevron-up.Page-Btn-Icon
+    == yield
+
+    = render 'partial/footer'
+
+javascript:
+  new Vue({
+    el: '#app',
+    methods: {
+      scrollTop: function(){
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      }
+    }
+  })
+
